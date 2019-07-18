@@ -6,12 +6,13 @@ const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
 const devMode = process.env.NODE_ENV !== 'production';
 
 module.exports = {
     mode: devMode ? 'development' : 'production',
     entry: {
-        // app: './src/index.js'
         app: './src/index.tsx'
     },
     // devtool: 'source-map',
@@ -24,14 +25,18 @@ module.exports = {
         new webpack.ProvidePlugin({
             _: 'lodash'
         }),
-        new CleanWebpackPlugin(),
+        // new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
-            title: 'Navigo Line Copo - Demo'
+            template: "./src/html/index.html",
+            filename: "./index.html"
         }),
         new MiniCssExtractPlugin({
-            filename: devMode ? '[name].css' : '[name].[hash].css',
-            chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
+            filename: '[name].css',
+            chunkFilename: '[id].css',
         }),
+        new CopyWebpackPlugin([
+            { from: './src/images', to: './images' }
+        ])
     ],
     output: {
         filename: '[name].bundle.js',
@@ -44,6 +49,12 @@ module.exports = {
     },
     module: {
         rules: [{
+                test: /\.(js|tsx)$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'awesome-typescript-loader'
+                }
+            }, {
                 test: /\.(sa|sc|c)ss$/,
                 use: [
                     MiniCssExtractPlugin.loader,

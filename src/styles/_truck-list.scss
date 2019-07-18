@@ -1,0 +1,58 @@
+.truck-list {
+    margin-bottom: 2rem;
+
+    &__table {
+        overflow-x: auto;
+        @include custom-scrollbar-x();
+    }
+
+    &__pagination {
+        ul {
+            margin-top: 1rem;
+        }
+    }
+
+    table {
+        text-align: center;
+    }
+
+    .col-price {
+        text-align: right;
+    }
+
+    tbody {
+
+        .col-price,
+        .col-dimension {
+            white-space: nowrap;
+        }
+
+        td {
+            vertical-align: middle;
+        }
+    }
+
+    .col-parking-address .content-wrapper {
+        min-width: 10rem;
+        display: inline-block;
+    }
+
+    .item__action {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+
+        a {
+            font-size: .85em;
+            padding: 2px 5px;
+            margin: 2px .5rem;
+        }
+    }
+}
+
+.page-link {
+    &:focus {
+        box-shadow: none;
+        border-color: #999;
+    }
+}
