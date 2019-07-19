@@ -18,8 +18,7 @@ ReactDOM.render(
     document.getElementById("my-struck-form")
 );
 
-
 ReactDOM.render(
-    <TruckList/>,
+    <TruckList pageSize={10} />,
     document.getElementById("my-struck-list")
 );

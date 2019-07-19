@@ -32,9 +32,17 @@
         }
     }
 
+    .col-parking-address .content-wrapper,
+    .col-desc .content-wrapper {
+        display: inline-block;
+    }
+
     .col-parking-address .content-wrapper {
         min-width: 10rem;
-        display: inline-block;
+    }
+
+    .col-desc .content-wrapper {
+        min-width: 13rem;
     }
 
     .item__action {
@@ -48,6 +56,30 @@
             margin: 2px .5rem;
         }
     }
+}
+
+.col-sortable {
+    a {
+        @extend .dropdown-toggle;
+        color: $body-color;
+
+        &.none {
+            &:after {
+                color: $gray-500;
+            }
+        }
+
+        &.asc {
+            &:after {
+                transform: rotate(180deg);
+            }
+        }
+    }
+}
+
+.noitems {
+    padding: 2rem 0;
+    display: block;
 }
 
 .page-link {

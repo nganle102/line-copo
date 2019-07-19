@@ -1,11 +1,7 @@
 @import "variables";
 
 // This is used for run production
-// @import "~bootstrap/scss/bootstrap";
-
-// This is used for manual compiler => prototype
 @import "~bootstrap/scss/bootstrap";
-
 
 
 @import "./mixin/breakpoint";
