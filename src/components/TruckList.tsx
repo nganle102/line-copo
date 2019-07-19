@@ -1,7 +1,13 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+
+import { IActionType } from './IActionType';
+import Search from './Search';
+
+var accents = require('remove-accents');
 
 class TruckList extends React.Component < any, any > {
-    constructor(props: any) {
+    constructor(props: any, Search) {
         super(props);
         this.state = {
             sortBy: '',
@@ -14,7 +20,7 @@ class TruckList extends React.Component < any, any > {
             drivers: [],
             cargoTypes: [],
             statusTypes: [],
-            truckTypes: [],
+            truckTypes: []
         };
     }
 
@@ -92,14 +98,12 @@ class TruckList extends React.Component < any, any > {
                 comparison = -1;
             }
         } else {
-            // DESC
             if (A < B) {
                 comparison = 1;
             } else if (A > B) {
                 comparison = -1;
             }
         }
-
 
         return comparison;
     }
@@ -165,22 +169,18 @@ class TruckList extends React.Component < any, any > {
     }
 
     truckDelete(item, e) {
-        var self = this;
+        const self = this;
 
         e.preventDefault();
+
+        if (!window.confirm("Are you sure you wish to delete this truck?"))
+            return;
 
         fetch('http://localhost:3002/trucks/' + item.id, {
                 method: 'DELETE'
             })
             .then(response => response.json())
             .then(success => {
-                    console.log('delete successfully');
-
-                    // var index = self.state.trucks.indexOf(item);
-                    // if (index > -1) {
-                    //     self.setState({ trucks: self.state.trucks.splice(index, 1) });
-                    // }
-
                     fetch('http://localhost:3002/trucks')
                         .then(response => response.json())
                         .then(data => {
@@ -195,12 +195,44 @@ class TruckList extends React.Component < any, any > {
                             if (self.state.currentPage > self.state.pages - 1) {
                                 self.setState({ currentPage: self.state.currentPage - 1 });
                             }
+
+                            const _msg: IActionType = { message: `Delete successfully truck: ${item.id} / ${item.plate}`, type: 'DELETE_TRUCK' };
+                            self.props.dispatch(_msg);
                         });
                 },
                 error => {
                     console.log('error:' + error);
                 });
     }
+
+    onSearch(keyword) {
+        const self = this;
+        console.log(keyword);
+
+        fetch('http://localhost:3002/trucks')
+            .then(response => response.json())
+            .then(data => {
+                data.map((item) => {
+                    item.driverName = self.getDriverName(item.driverId);
+                    item.statusType = self.getStatusType(item.statusTypeId);
+                    item.truckType = self.getTruckType(item.truckTypeId);
+                    item.cargoTypes = self.getCargoTypes(item.cargoTypeIds);
+                });
+
+                self.setState({ previousDisabled: true, nextDisabled: false });
+
+                // Search by truck plate for driver name
+                let result = data.filter(item => {
+                    let _keyword = accents.remove(keyword).toLowerCase();
+                    let _driverName = accents.remove(item.driverName).toLowerCase();
+
+                    return item.plate.toLowerCase().indexOf(_keyword) > -1 || _driverName.indexOf(_keyword) > -1;
+                });
+
+                self.setState({ trucks: result, pages: Math.ceil(result.length / self.props.pageSize) });
+            });
+    }
+
     // #endregion
 
     render() {
@@ -217,23 +249,23 @@ class TruckList extends React.Component < any, any > {
             return currentPageItems.map((item) => {
                 return (
                     <tr className="item" key={item.id}>
-                    <td className="col-action">
-                        <div className="item__action">
-                            <a href="#" className="item__edit" onClick={self.truckEdit.bind(self, item)}>Edit</a>
-                            <a href="#" className="item__delete" onClick={self.truckDelete.bind(self, item)}>Delete</a>
-                        </div>
-                    </td>
-                    <td className="col-truck-plate">{item.plate}</td>
-                    <td className="col-cargo">{item.cargoTypes}</td>
-                    <td className="col-driver">{item.driverName}</td>
-                    <td className="col-truck-type">{item.truckType}</td>
-                    <td className="col-price">{item.price.toLocaleString()}</td>
-                    <td className="col-dimension">{item.dimension}</td>
-                    <td className="col-parking-address"><span className="content-wrapper">{item.address}</span></td>
-                    <td className="col-year">{item.productionYear}</td>
-                    <td className="col-status">{item.statusType}</td>
-                    <td className="col-desc"><span className="content-wrapper">{item.description}</span></td>
-                </tr>
+                        <td className="col-action">
+                            <div className="item__action">
+                                <a href="#" className="item__edit" onClick={self.truckEdit.bind(self, item)}>Edit</a>
+                                <a href="#" className="item__delete" onClick={self.truckDelete.bind(self, item)}>Delete</a>
+                            </div>
+                        </td>
+                        <td className="col-truck-plate">{item.plate}</td>
+                        <td className="col-cargo">{item.cargoTypes}</td>
+                        <td className="col-driver">{item.driverName}</td>
+                        <td className="col-truck-type">{item.truckType}</td>
+                        <td className="col-price">{item.price.toLocaleString()}</td>
+                        <td className="col-dimension">{item.dimension}</td>
+                        <td className="col-parking-address"><span className="content-wrapper">{item.address}</span></td>
+                        <td className="col-year">{item.productionYear}</td>
+                        <td className="col-status">{item.statusType}</td>
+                        <td className="col-desc"><span className="content-wrapper">{item.description}</span></td>
+                    </tr>
                 );
             })
         }
@@ -273,10 +305,11 @@ class TruckList extends React.Component < any, any > {
                             </tr>
                         </thead>
                         <tbody>
-                            {self.state.trucks.length > 0 &&
+                            { self.state.trucks.length > 0 &&
                                 getCurrentPageTrucks()
-                            }{
-                                self.state.trucks.length==0 &&
+                            }
+
+                            { self.state.trucks.length==0 &&
                                 <tr>
                                     <td colSpan={11}>
                                         <span className="noitems">There's no items.</span>
@@ -310,4 +343,4 @@ class TruckList extends React.Component < any, any > {
     }
 }
 
-export default TruckList;
+export default connect()(TruckList);
