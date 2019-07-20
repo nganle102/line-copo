@@ -29,6 +29,9 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: "./src/html/index.html",
             filename: "./index.html"
+        }), new HtmlWebpackPlugin({
+            template: "./src/html/addnew.html",
+            filename: "./addnew.html"
         }),
         new MiniCssExtractPlugin({
             filename: '[name].css',
@@ -45,7 +48,11 @@ module.exports = {
         publicPath: '/'
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js']
+        extensions: ['.tsx', '.ts', '.js'],
+        alias: {
+            src: path.resolve(__dirname, "src"),
+            components: path.resolve(__dirname, "src", "components")
+        }
     },
     module: {
         rules: [{

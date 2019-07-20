@@ -4,15 +4,16 @@ import { connect } from 'react-redux';
 import { IActionType } from './IActionType';
 
 interface IInstantSearchProps extends IActionType {
+    placeholder ? : string;
     delay ? : number;
     minlength ? : number;
     autoFocus ? : boolean;
     dispatch ? : (arg: IActionType) => void;
+    onSearch: (arg ? : string) => void;
 }
 
 interface IInstantSearchState {
     keyword: string;
-    lastSearchKeyword: string;
     isSearching: boolean;
     statusCssClass: string;
 }
@@ -27,7 +28,6 @@ export default connect((state) => state)(
             super(props);
             this.state = {
                 keyword: "",
-                lastSearchKeyword: "",
                 isSearching: false,
                 statusCssClass: ""
             }
@@ -47,33 +47,38 @@ export default connect((state) => state)(
                         var keyword = self.state.keyword.trim();
 
                         if (keyword.length >= self.minlength) {
-                            if (keyword !== self.state.lastSearchKeyword) {
-                                self.setState({ lastSearchKeyword: keyword }, () => {
-                                    self.getStatusCssClass();
+                            self.getStatusCssClass();
 
-                                    const _msg: IActionType = { type: 'SEARCH_LOAD', keyword: self.state.keyword };
-                                    self.props.dispatch(_msg);
-                                });
-                            }
+                            this.props.onSearch(keyword);
+
+                            const _msg: IActionType = { type: 'SEARCH_LOAD', keyword: keyword };
+                            self.props.dispatch(_msg);
                         } else {
-                            self.setState({ lastSearchKeyword: "" }, () => {
+                            self.getStatusCssClass();
 
-                                self.getStatusCssClass();
+                            this.props.onSearch();
 
-                                const _msg: IActionType = { type: 'SEARCH_CLEAR' };
-                                self.props.dispatch(_msg);
-                            });
+                            const _msg: IActionType = { type: 'SEARCH_CLEAR' };
+                            self.props.dispatch(_msg);
                         }
                     }, self.delay);
                 });
+        }
+
+        onKeyPress(event: KeyboardEvent) {
+            if (event.which == 13 || event.keyCode == 13) {
+                event.preventDefault();
+            }
         }
 
         onReset(event) {
             this.setState({ keyword: "" });
             this.setState({ statusCssClass: "" });
 
+            this.props.onSearch();
+
             const _msg: IActionType = { type: 'SEARCH_CLEAR' };
-            self.props.dispatch(_msg);
+            this.props.dispatch(_msg);
         }
 
         getStatusCssClass() {
@@ -94,7 +99,7 @@ export default connect((state) => state)(
                 <div className={`search ${this.state.statusCssClass}`}>
                     <form className="search__container" action=".">
                         <div className="search__input-container">
-                            <input className="search__input" placeholder="Enter searck key..." type="search" name="search"  aria-label="Search" value={this.state.keyword} autoFocus={this.props.autoFocus || false} onChange={this.keywordChange.bind(this)} />
+                            <input className="search__input" placeholder={this.props.placeholder} type="search" name="search"  aria-label="Search" value={this.state.keyword} autoFocus={this.props.autoFocus || false} onChange={this.keywordChange.bind(this)} onKeyPress={this.onKeyPress.bind(this)} />
                             <button className="search__reset" type="reset" onClick={this.onReset.bind(this)}><span>&#215;</span></button>
                             <span className="search__search-icon"></span>
                         </div>

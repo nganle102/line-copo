@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { IActionType } from './IActionType';
 import Search from './Search';
 
-var accents = require('remove-accents');
+import { removeAccents } from '../helpers/helpers';
 
 class TruckList extends React.Component < any, any > {
     constructor(props: any, Search) {
@@ -207,7 +207,14 @@ class TruckList extends React.Component < any, any > {
 
     onSearch(keyword) {
         const self = this;
-        console.log(keyword);
+
+        this.setState({
+            sortBy: '',
+            sortDirection: '',
+            currentPage: 0,
+            previousDisabled: false,
+            nextDisabled: false,
+        });
 
         fetch('http://localhost:3002/trucks')
             .then(response => response.json())
@@ -221,15 +228,21 @@ class TruckList extends React.Component < any, any > {
 
                 self.setState({ previousDisabled: true, nextDisabled: false });
 
-                // Search by truck plate for driver name
-                let result = data.filter(item => {
-                    let _keyword = accents.remove(keyword).toLowerCase();
-                    let _driverName = accents.remove(item.driverName).toLowerCase();
+                if (keyword != undefined && keyword.length > 0) {
+                    // Search by truck plate for driver name
+                    let result = data.filter(item => {
+                        let _keyword = removeAccents(keyword).toLowerCase();
+                        let _driverName = removeAccents(item.driverName).toLowerCase();
 
-                    return item.plate.toLowerCase().indexOf(_keyword) > -1 || _driverName.indexOf(_keyword) > -1;
-                });
+                        return item.plate.toLowerCase().indexOf(_keyword) > -1 || _driverName.indexOf(_keyword) > -1;
+                    });
 
-                self.setState({ trucks: result, pages: Math.ceil(result.length / self.props.pageSize) });
+                    self.setState({ trucks: result, pages: Math.ceil(result.length / self.props.pageSize) });
+
+                } else {
+                    self.setState({ trucks: data, pages: Math.ceil(data.length / self.props.pageSize) });
+                }
+
             });
     }
 
@@ -286,59 +299,70 @@ class TruckList extends React.Component < any, any > {
         }
 
         return (
-            <div className="truck-list">
-                <div className="truck-list__table">
-                    <table className="table">
-                        <thead>
-                            <tr className="item">
-                                <th className="col-action" scope="col"></th>
-                                <th className="col-truck-plate col-sortable" scope="col"><a href="#" onClick={this.sortBy.bind(this, 'plate')} className={this.getSortDirectionOfColumn('plate')}>Truck plate</a></th>
-                                <th className="col-cargo" scope="col">Cargo type</th>
-                                <th className="col-driver col-sortable" scope="col"><a href="#" onClick={this.sortBy.bind(this, 'driver')} className={this.getSortDirectionOfColumn('driver')}>Driver</a></th>
-                                <th className="col-truck-type col-sortable" scope="col">Truck type</th>
-                                <th className="col-price col-sortable" scope="col"><a href="#" onClick={this.sortBy.bind(this, 'price')} className={this.getSortDirectionOfColumn('price')}>Price</a></th>
-                                <th className="col-dimension" scope="col">Dimension (L-W-H)</th>
-                                <th className="col-parking-address" scope="col">Parking address</th>
-                                <th className="col-year col-sortable" scope="col"><a href="#" onClick={this.sortBy.bind(this, 'year')} className={this.getSortDirectionOfColumn('year')}>Production year</a></th>
-                                <th className="col-status col-sortable" scope="col"><a href="#" onClick={this.sortBy.bind(this, 'status')} className={this.getSortDirectionOfColumn('status')}>Status</a></th>
-                                <th className="col-desc" scope="col">Description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            { self.state.trucks.length > 0 &&
-                                getCurrentPageTrucks()
-                            }
-
-                            { self.state.trucks.length==0 &&
-                                <tr>
-                                    <td colSpan={11}>
-                                        <span className="noitems">There's no items.</span>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+            <React.Fragment>
+                <div className="row">
+                    <div className="col-12 col-md-7">
+                        <a className="btn btn-primary btn-addnewtruck" href="/addnew.html">Add new truck</a>
+                    </div>
+                    <div className="col-12 col-md-5">
+                        <Search autoFocus={true} onSearch={this.onSearch.bind(this)} placeholder="Search by plate or driver name" />
+                    </div>
                 </div>
 
-                { self.state.pages > 1 &&
-                    <div className="truck-list__pagination">
-                        <nav aria-label="Trucks page navigation">
-                            <ul className="pagination justify-content-end">
-                                <li className={`page-item ${self.state.previousDisabled? 'disabled' :''}`}>
-                                    <a className="page-link" href="#" onClick={self.pageNavigate.bind(self, self.state.currentPage - 1)} tabIndex={self.state.previousDisabled? -1 :0} aria-disabled={self.state.previousDisabled}>Prev</a>
-                                </li>
+                <div className="truck-list">
+                    <div className="truck-list__table">
+                        <table className="table">
+                            <thead>
+                                <tr className="item">
+                                    <th className="col-action" scope="col"></th>
+                                    <th className="col-truck-plate col-sortable" scope="col"><a href="#" onClick={this.sortBy.bind(this, 'plate')} className={this.getSortDirectionOfColumn('plate')}>Truck plate</a></th>
+                                    <th className="col-cargo" scope="col">Cargo type</th>
+                                    <th className="col-driver col-sortable" scope="col"><a href="#" onClick={this.sortBy.bind(this, 'driver')} className={this.getSortDirectionOfColumn('driver')}>Driver</a></th>
+                                    <th className="col-truck-type col-sortable" scope="col">Truck type</th>
+                                    <th className="col-price col-sortable" scope="col"><a href="#" onClick={this.sortBy.bind(this, 'price')} className={this.getSortDirectionOfColumn('price')}>Price</a></th>
+                                    <th className="col-dimension" scope="col">Dimension (L-W-H)</th>
+                                    <th className="col-parking-address" scope="col">Parking address</th>
+                                    <th className="col-year col-sortable" scope="col"><a href="#" onClick={this.sortBy.bind(this, 'year')} className={this.getSortDirectionOfColumn('year')}>Production year</a></th>
+                                    <th className="col-status col-sortable" scope="col"><a href="#" onClick={this.sortBy.bind(this, 'status')} className={this.getSortDirectionOfColumn('status')}>Status</a></th>
+                                    <th className="col-desc" scope="col">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                { self.state.trucks.length > 0 &&
+                                    getCurrentPageTrucks()
+                                }
 
-                                {pagination()}
-
-                                <li className={`page-item ${self.state.nextDisabled? 'disabled' :''}`}>
-                                    <a className="page-link" href="#" onClick={self.pageNavigate.bind(self, self.state.currentPage + 1)} tabIndex={self.state.nextDisabled? -1 :0}  aria-disabled={self.state.nextDisabled}>Next</a>
-                                </li>
-                            </ul>
-
-                        </nav>
+                                { self.state.trucks.length==0 &&
+                                    <tr>
+                                        <td colSpan={11}>
+                                            <span className="noitems">There's no items.</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
-                }
-            </div>
+
+                    { self.state.pages > 1 &&
+                        <div className="truck-list__pagination">
+                            <nav aria-label="Trucks page navigation">
+                                <ul className="pagination justify-content-end">
+                                    <li className={`page-item ${self.state.previousDisabled? 'disabled' :''}`}>
+                                        <a className="page-link" href="#" onClick={self.pageNavigate.bind(self, self.state.currentPage - 1)} tabIndex={self.state.previousDisabled? -1 :0} aria-disabled={self.state.previousDisabled}>Prev</a>
+                                    </li>
+
+                                    {pagination()}
+
+                                    <li className={`page-item ${self.state.nextDisabled? 'disabled' :''}`}>
+                                        <a className="page-link" href="#" onClick={self.pageNavigate.bind(self, self.state.currentPage + 1)} tabIndex={self.state.nextDisabled? -1 :0}  aria-disabled={self.state.nextDisabled}>Next</a>
+                                    </li>
+                                </ul>
+
+                            </nav>
+                        </div>
+                    }
+                </div>
+            </React.Fragment>
         );
     }
 }

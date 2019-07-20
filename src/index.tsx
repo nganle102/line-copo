@@ -34,21 +34,18 @@ const store = createStore(function (state, action: IActionType) {
     }
 });
 
-ReactDOM.render(
-    <Provider store={store}>
-        <Search autoFocus={true} />
-    </Provider>,
-    document.getElementById("my-search")
-);
+if (document.getElementById('my-struck-form')) {
+    ReactDOM.render(
+        <TruckForm/>,
+        document.getElementById("my-struck-form")
+    );
+}
 
-ReactDOM.render(
-    <TruckForm/>,
-    document.getElementById("my-struck-form")
-);
-
-ReactDOM.render(
-    <Provider store={store}>
+if (document.getElementById('my-struck-list')) {
+    ReactDOM.render(
+        <Provider store={store}>
         <TruckList pageSize={10} />
     </Provider>,
-    document.getElementById("my-struck-list")
-);
+        document.getElementById("my-struck-list")
+    );
+}

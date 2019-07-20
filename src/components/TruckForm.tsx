@@ -4,7 +4,6 @@ class TruckForm extends React.Component {
     render() {
         return (
             <div className="truckform">
-                <button type="button" className="btn btn-primary truckform__toggler">Add new truck</button>
                 <div className="alert alert-success alert-dismissible fade show" role="alert">
                     <strong>Success!</strong> New truck record has just been added.
                     <button type="button" className="close" data-dismiss="alert" aria-label="Close">
