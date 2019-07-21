@@ -1,7 +1,7 @@
 # line-copo
 Navigosearch Line Copo
 
-Usage
+**Usage**
 
 Start JSON Server: run `$ json-server --watch db.json --port 3002` OR `$ npm run server` <br/>
 Run command `$ npm run build` <br/>
