@@ -1,0 +1,65 @@
+
+$grid-breakpoints: (xs: 0,
+                    sm: 576px,
+                    md: 768px,
+                    lg: 1266px,
+                    xl: 1626px) !default;
+
+
+// $container-max-widths: (sm: 540px,
+//                         md: 720px,
+//                         lg: 1206px,
+//                         xl: 1566px) !default;
+
+$container-max-widths: (sm: 540px,
+                        md: 720px,
+                        lg: 1206px,
+                        xl: 1566px) !default;
+
+
+
+$spacer: 1rem !default;
+$spacer-x: $spacer !default;
+$spacer-y: $spacer !default;
+
+$white:    #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #6c757d !default;
+$gray-700: #495057 !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+$black:    #000 !default;
+
+$light:         $gray-200 !default;
+$secondary:     $gray-500 !default;
+
+$link-color:    #007bff !default;
+
+$asset-path:                  "../" !default;
+$images-path:                 $asset-path + "images/" !default;
+
+
+$body-color:                            $black !default;
+
+$table-border-color:                    #ddd !default;
+
+$input-placeholder-color:               $gray-600 !default;
+
+$input-btn-focus-width:                 2px !default;
+
+$custom-scrollbar-track-bg-color:       #f5f5f5 !default;
+$custom-scrollbar-thumb-bg-color:       #c2c2c2 !default;
+$custom-scrollbar-width:                6px !default;
+$custom-scrollbar-border-radius:        6px !default;
+
+$logo-height:                           40px !default;
+
+$search-container-bg-color:                     $white !default;
+$search-button-bg-color:                        $search-container-bg-color !default;
+$search-button-default-bg-image:                url('#{$images-path}icons/search.svg') !default;
+$search-button-working-bg-image:                url('#{$images-path}icons/spinner-black.svg') !default;
+$search-icon-width:                             3.2em !default;

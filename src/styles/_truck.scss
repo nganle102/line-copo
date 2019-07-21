@@ -1,0 +1,81 @@
+.counter {
+    display: flex;
+    justify-content: flex-end;
+
+    &__label {
+        margin-right: .5em;
+    }
+
+    &__value {
+        font-weight: 600;
+    }
+}
+
+.truckform {
+    margin-bottom: 4rem;
+
+    &--edit {
+        // currently issues of getting props
+        .number-markup {
+            display: none;
+        }
+    }
+
+    &,
+    &__form {
+        text-align: right;
+    }
+
+    >div {
+        text-align: left;
+    }
+
+    .form-group--cargoTypeIds {
+        .form-control {
+            min-height: 16rem;
+        }
+    }
+
+    textarea {
+        min-height: 9.5rem;
+    }
+}
+
+.form {
+    &__fieldsets {
+        display: flex;
+        flex-wrap: wrap;
+
+        fieldset {
+            flex-basis: 100%;
+            text-align: left;
+        }
+
+        @include media-breakpoint-up(md) {
+            margin-left: -2rem;
+            margin-right: -2rem;
+
+            fieldset {
+                flex-basis: 50%;
+                padding: 1rem 2rem;
+            }
+        }
+
+
+        @include media-breakpoint-up(lg) {
+            margin-left: -3rem;
+            margin-right: -3rem;
+
+            fieldset {
+                padding: 1rem 3rem;
+            }
+        }
+    }
+
+    &__actions {
+
+        .btn {
+            margin-left: .5rem;
+        }
+    }
+}
