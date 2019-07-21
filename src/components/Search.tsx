@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { IActionType } from './IActionType';
 
 interface IInstantSearchProps extends IActionType {
+    isSearching ? : boolean;
     placeholder ? : string;
     delay ? : number;
     minlength ? : number;
@@ -14,7 +15,6 @@ interface IInstantSearchProps extends IActionType {
 
 interface IInstantSearchState {
     keyword: string;
-    isSearching: boolean;
     statusCssClass: string;
 }
 
@@ -28,7 +28,6 @@ export default connect((state) => state)(
             super(props);
             this.state = {
                 keyword: "",
-                isSearching: false,
                 statusCssClass: ""
             }
             this.delay = props.delay === undefined ? 500 : props.delay;
@@ -87,7 +86,7 @@ export default connect((state) => state)(
             if (this.state.keyword.length > 0) {
                 _status += ' search--has-value';
             }
-            if (this.state.isSearching) {
+            if (this.props.isSearching) {
                 _status += ' search--working';
             }
             this.setState({ statusCssClass: _status });

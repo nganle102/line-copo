@@ -10,6 +10,7 @@ class TruckList extends React.Component < any, any > {
     constructor(props: any, Search) {
         super(props);
         this.state = {
+            isSearching: false,
             sortBy: '',
             sortDirection: '',
             pages: 0,
@@ -201,6 +202,7 @@ class TruckList extends React.Component < any, any > {
         const self = this;
 
         this.setState({
+            isSearching: true,
             sortBy: '',
             sortDirection: '',
             currentPage: 0,
@@ -232,10 +234,10 @@ class TruckList extends React.Component < any, any > {
                         return item.plate.toLowerCase().indexOf(_keyword) > -1 || _driverName.indexOf(_keyword) > -1;
                     });
 
-                    self.setState({ trucks: result, pages: Math.ceil(result.length / self.props.pageSize) });
+                    self.setState({ trucks: result, pages: Math.ceil(result.length / self.props.pageSize), isSearching: false });
 
                 } else {
-                    self.setState({ trucks: data, pages: Math.ceil(data.length / self.props.pageSize) });
+                    self.setState({ trucks: data, pages: Math.ceil(data.length / self.props.pageSize), isSearching: false });
                 }
 
             });
@@ -299,7 +301,7 @@ class TruckList extends React.Component < any, any > {
                         <a className="btn btn-primary btn-addnewtruck" href="/addnew.html">Add new truck</a>
                     </div>
                     <div className="col-12 col-md-5">
-                        <Search autoFocus={true} onSearch={this.onSearch.bind(this)} placeholder="Search by plate or driver name" />
+                        <Search autoFocus={true} onSearch={this.onSearch.bind(this)} isSearching={this.state.isSearching} placeholder="Search by plate or driver name" />
                     </div>
                 </div>
 

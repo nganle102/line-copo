@@ -11,12 +11,13 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const devMode = process.env.NODE_ENV !== 'production';
 
 module.exports = {
-    mode: devMode ? 'development' : 'production',
+    // mode: devMode ? 'development' : 'production',
+    mode: 'production',
     entry: {
         app: './src/index.tsx'
     },
     // devtool: 'source-map',
-    devtool: 'inline-source-map',
+    // devtool: 'inline-source-map',
     devServer: {
         port: 3000,
         contentBase: './dist'
@@ -25,7 +26,7 @@ module.exports = {
         new webpack.ProvidePlugin({
             _: 'lodash'
         }),
-        // new CleanWebpackPlugin(),
+        new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             template: "./src/html/index.html",
             filename: "./index.html"

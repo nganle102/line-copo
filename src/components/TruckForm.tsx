@@ -14,7 +14,6 @@ class TruckForm extends React.Component < any, any > {
             truckId: 0,
             truck: {},
             fieldset: {
-                all: [],
                 main: [],
                 additional: []
             },
@@ -37,7 +36,7 @@ class TruckForm extends React.Component < any, any > {
         const MainFields = [{ name: 'plate', hasLabel: true, label: 'Truck plate', hasDescription: true, description: 'Plate must be correct format. Example: 30A-12345', placeholder: 'Enter truck plate', required: true, type: 'text', pattern: '[0-9]{2}[A-Za-z]-[0-9]{5}' },
             { name: 'cargoTypeIds', hasLabel: true, label: 'Cargo type(s)', placeholder: 'Select cargo type (s)', required: true, type: 'select', multiple: true, autocomplete: true, max: 10 },
             { name: 'driverId', hasLabel: true, label: 'Driver', placeholder: 'Select driver', type: 'select', autocomplete: true },
-            { name: 'truckTypeId', hasLabel: true, label: 'Truck type', placeholder: 'Select truck type', required: true, type: 'select' },
+            { name: 'truckTypeId', hasLabel: true, label: 'Truck type', placeholder: 'Select truck type', type: 'select' },
             { name: 'price', hasLabel: true, label: 'Price', placeholder: '0', required: true, type: 'number', isInputGroup: true, prependLabel: 'VND', min: 0, max: 1000000000000 }
         ];
 
@@ -78,15 +77,14 @@ class TruckForm extends React.Component < any, any > {
 
         self.mapProductionYear(AdditionalFields);
 
+        self.getTruck(MainFields, AdditionalFields);
+
         self.setState({
             fieldset: {
-                all: [...MainFields, ...AdditionalFields],
                 main: MainFields,
                 additional: AdditionalFields
             }
         });
-
-        self.getTruck();
     }
 
     mapProductionYear(fieldset) {
@@ -96,7 +94,8 @@ class TruckForm extends React.Component < any, any > {
         for (var i = 1980; i <= currentYear; ++i) {
             years.push({
                 value: i,
-                name: i
+                name: i,
+                selected: false
             });
         }
 
@@ -109,18 +108,28 @@ class TruckForm extends React.Component < any, any > {
         let index = fieldset.findIndex(item => item.name == fieldName);
 
         // map options to each input field
-        Object.assign(fieldset[index], {
-            options: data.map(item => {
-                return {
-                    value: item.id,
-                    name: item.name,
-                    selected: item.seleted
-                };
+        var opts = data.map(item => {
+            return {
+                value: item.id,
+                name: item.name,
+                selected: item.seleted
+            };
+        });
+
+        if (!fieldset[index].required) {
+            opts.unshift({
+                value: '0',
+                name: fieldset[index].placeholder,
+                selected: true
             })
+        };
+
+        Object.assign(fieldset[index], {
+            options: opts
         });
     }
 
-    getTruck() {
+    getTruck(fmain, fadditional) {
         const urlParams = new URLSearchParams(window.location.search);
         let _truckId = 0;
         if (urlParams.has('id')) {
@@ -131,9 +140,37 @@ class TruckForm extends React.Component < any, any > {
             fetch('http://localhost:3002/trucks/' + _truckId)
                 .then(response => response.json())
                 .then(data => {
+                    this.mapTruckData(data, fmain, fadditional);
                     this.setState({ truck: data });
                 });
         }
+    }
+
+    mapTruckData(data, fmain, fadditional) {
+        const self = this;
+        fmain.map(item => {
+            item.value = data[item.name];
+
+            if (/driverId|truckTypeId|statusTypeId|productionYear/.test(item.name)) {
+                item.options.map(i => i.selected = i.value == item.value);
+            }
+
+            if (/cargoTypeIds/.test(item.name)) {
+                item.options.map(i => i.selected = item.value.indexOf(i.value) > -1);
+            }
+        });
+
+        fadditional.map(item => {
+            item.value = data[item.name];
+
+            if (/driverId|truckTypeId|statusTypeId|productionYear/.test(item.name)) {
+                item.options.map(i => i.selected = i.value == item.value);
+            }
+
+            if (/cargoTypeIds/.test(item.name)) {
+                item.options.map(i => i.selected = item.value.indexOf(i.value) > -1);
+            }
+        });
     }
 
     serializeFormJSON(orgArr) {
@@ -151,11 +188,16 @@ class TruckForm extends React.Component < any, any > {
         return o;
     }
 
-    saveData(jsonData) {
+    saveData(jsonData, isAddnew) {
         const self = this;
 
-        fetch('http://localhost:3002/trucks', {
-                method: 'POST',
+        var url = 'http://localhost:3002/trucks';
+        if (!isAddnew) {
+            url += '/' + self.state.truckId;
+        }
+
+        fetch(url, {
+                method: isAddnew ? 'POST' : 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -215,8 +257,8 @@ class TruckForm extends React.Component < any, any > {
                         fetch('http://localhost:3002/trucks?plate=' + jsonData['plate'].toUpperCase())
                             .then(response => response.json())
                             .then(data => {
-                                if (data.length == 0) {
-                                    self.saveData(jsonData);
+                                if (data.length == 0 || (data.length == 1 && data[0].id == self.state.truckId)) {
+                                    self.saveData(jsonData, data.length == 0);
                                 } else {
                                     self.displayError();
                                 }
@@ -233,9 +275,6 @@ class TruckForm extends React.Component < any, any > {
         form.classList.add('was-validated');
     }
 
-
-
-
     render() {
         const self = this;
 
@@ -250,14 +289,14 @@ class TruckForm extends React.Component < any, any > {
                         multiple={item.multiple} autocomplete={item.autocomplete}
                         min={item.min} max={item.max}
                         minLength={item.minLength} maxLength={item.maxLength}
-                        options={item.options} defaultValue={item.defaultValue}
+                        options={item.options} value={item.value} multipleValue={item.value}
                         pattern={item.pattern} />
                 );
             })
         }
 
         return (
-            <div className="truckform">
+            <div className={`truckform ${this.state.truckId > 0 ? 'truckform--edit' : 'truckform--addnew'}`}>
                 <Alert type={this.state.message.type}  title={this.state.message.title}  text={this.state.message.text} show={this.state.message.show} />
                 <form className="truckform__form form truck" onSubmit={this.onSubmitForm.bind(this)}>
                     <div className="form__fieldsets">
