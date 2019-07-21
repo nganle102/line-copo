@@ -3,7 +3,8 @@ Navigosearch Line Copo
 
 **Usage**
 
-Start JSON Server: run `$ json-server --watch db.json --port 3002` OR `$ npm run server` <br/>
+Download folder. Open command window <br/>
+Run command `$ npm install --save-dev webpack` <br/>
 Run command `$ npm run build` <br/>
 Run command `$ npm run start` (start run website) <br/>
 
