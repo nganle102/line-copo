@@ -13,6 +13,47 @@ input[type="search"]::-webkit-search-results-decoration {
     }
 }
 
+.btn {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.number-markup {
+    position: absolute;
+    right: $input-border-width;
+    left: $input-border-width;
+    top: $input-border-width;
+    bottom: $input-border-width;
+    display: flex;
+    align-items: center;
+    background-color: $white;
+    padding: $input-padding-y $input-padding-x;
+    pointer-events: none !important;
+
+    .form-group--price & {
+        left: 60px;
+    }
+}
+
+
+.was-validated {
+    .form-control {
+        &:invalid {
+            border-color: $red;
+        }
+
+        &:valid {
+            border-color: $green;
+        }
+    }
+}
+
+
+textarea,
+select[multiple] {
+    @include custom-scrollbar-y();
+}
+
 // region: override select2
 .select2-container--default .select2-selection--single {
     border-color: $input-border-color;
@@ -39,4 +80,5 @@ input[type="search"]::-webkit-search-results-decoration {
 .select2-container--default .select2-selection--multiple .select2-selection__rendered {
     padding-left: $input-btn-padding-x;
 }
+
 // endregion: override select2

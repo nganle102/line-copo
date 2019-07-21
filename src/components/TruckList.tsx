@@ -78,10 +78,7 @@ class TruckList extends React.Component < any, any > {
     }
 
     getCargoTypes(types) {
-        var ids = types.split(',').map((el) => {
-            return parseInt(el, 10);
-        });
-        var result = this.state.cargoTypes.filter((item) => { return ids.indexOf(item.id) > 0 });
+        var result = this.state.cargoTypes.filter((item) => { return types.indexOf(item.id) > 0 });
         return result.length === 0 ? 'N/A' : result.map((el) => { return el.name }).join(', ');
     }
 
@@ -163,11 +160,6 @@ class TruckList extends React.Component < any, any > {
         this.setState({ currentPage: pageId });
     }
 
-    truckEdit(item, e) {
-        e.preventDefault();
-        console.log('Edit truck.');
-    }
-
     truckDelete(item, e) {
         const self = this;
 
@@ -215,6 +207,9 @@ class TruckList extends React.Component < any, any > {
             previousDisabled: false,
             nextDisabled: false,
         });
+
+        // http://localhost:3002/trucks?q=30A-99...
+        // not work for multi tables as separated drivers, statuses...
 
         fetch('http://localhost:3002/trucks')
             .then(response => response.json())
@@ -264,11 +259,10 @@ class TruckList extends React.Component < any, any > {
                     <tr className="item" key={item.id}>
                         <td className="col-action">
                             <div className="item__action">
-                                <a href="#" className="item__edit" onClick={self.truckEdit.bind(self, item)}>Edit</a>
                                 <a href="#" className="item__delete" onClick={self.truckDelete.bind(self, item)}>Delete</a>
                             </div>
                         </td>
-                        <td className="col-truck-plate">{item.plate}</td>
+                        <td className="col-truck-plate"><a href={`/addnew.html?id=${item.id}`} className="item__plate">{item.plate}</a></td>
                         <td className="col-cargo">{item.cargoTypes}</td>
                         <td className="col-driver">{item.driverName}</td>
                         <td className="col-truck-type">{item.truckType}</td>

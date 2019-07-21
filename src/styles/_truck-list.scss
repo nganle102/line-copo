@@ -47,13 +47,12 @@
 
     .item__action {
         display: flex;
-        flex-wrap: wrap;
         justify-content: center;
 
         a {
             font-size: .85em;
             padding: 2px 5px;
-            margin: 2px .5rem;
+            // margin: 2px .5rem;
         }
     }
 }

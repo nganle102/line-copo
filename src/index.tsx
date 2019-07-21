@@ -5,9 +5,9 @@ import { Provider } from 'react-redux';
 
 import { IActionType } from './components/IActionType';
 
-import Search from './components/Search';
-import TruckForm from './components/TruckForm';
-import TruckList from './components/TruckList';
+import Search from 'components/Search';
+import TruckForm from 'components/TruckForm';
+import TruckList from 'components/TruckList';
 
 import './styles/styles.scss';
 
