@@ -14,13 +14,6 @@
 .truckform {
     margin-bottom: 4rem;
 
-    &--edit {
-        // currently issues of getting props
-        .number-markup {
-            display: none;
-        }
-    }
-
     &,
     &__form {
         text-align: right;
@@ -28,6 +21,15 @@
 
     >div {
         text-align: left;
+    }
+
+    .form-group--plate {
+        .form-control {
+            text-transform: uppercase;
+            &::placeholder {
+                text-transform: none;
+            }
+        }
     }
 
     .form-group--cargoTypeIds {

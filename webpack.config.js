@@ -11,8 +11,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const devMode = process.env.NODE_ENV !== 'production';
 
 module.exports = {
-    // mode: devMode ? 'development' : 'production',
-    mode: 'production',
+    mode: devMode ? 'development' : 'production',
+    // mode: 'production',
     entry: {
         app: './src/index.tsx'
     },
@@ -26,7 +26,7 @@ module.exports = {
         new webpack.ProvidePlugin({
             _: 'lodash'
         }),
-        new CleanWebpackPlugin(),
+        // new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             template: "./src/html/index.html",
             filename: "./index.html"
@@ -39,7 +39,8 @@ module.exports = {
             chunkFilename: '[id].css',
         }),
         new CopyWebpackPlugin([
-            { from: './src/images', to: './images' }
+            { from: './src/images', to: './images' },
+            { from: './src/vendor', to: './vendor' }
         ])
     ],
     output: {

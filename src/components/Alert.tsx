@@ -5,7 +5,8 @@ interface IAlert {
     type: string;
     title ? : string;
     text: string;
-    show: boolean
+    show: boolean;
+    onDismiss: (arg) => void;
 }
 
 class Alert extends React.Component < IAlert, any > {
@@ -17,10 +18,10 @@ class Alert extends React.Component < IAlert, any > {
 
         return (
             <React.Fragment>
-                {this.props.show &&
+                { this.props.show &&
                     <div className={`alert alert-${this.props.type} alert-dismissible fade show`} role="alert">
                         <strong>{this.props.title}</strong> {this.props.text}
-                        <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+                        <button type="button" className="close" data-dismiss="alert" aria-label="Close" onClick={this.props.onDismiss}>
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>

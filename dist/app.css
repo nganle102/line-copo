@@ -7491,12 +7491,14 @@ select[multiple] {
 
 .truckform {
   margin-bottom: 4rem; }
-  .truckform--edit .number-markup {
-    display: none; }
   .truckform, .truckform__form {
     text-align: right; }
   .truckform > div {
     text-align: left; }
+  .truckform .form-group--plate .form-control {
+    text-transform: uppercase; }
+    .truckform .form-group--plate .form-control::placeholder {
+      text-transform: none; }
   .truckform .form-group--cargoTypeIds .form-control {
     min-height: 16rem; }
   .truckform textarea {

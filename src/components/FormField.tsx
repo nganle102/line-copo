@@ -24,7 +24,7 @@ interface IFormFieldProps {
     isInputGroup ? : boolean;
     prependLabel ? : string;
     options ? : SelectOption[];
-    value ? : any;
+    defaultValue ? : any;
     multipleValue ? : number[];
     pattern ? : string;
 }
@@ -50,33 +50,30 @@ class FormField extends React.Component < IFormFieldProps, IFormFieldState > {
     }
 
     componentDidMount() {
-        // this.setState({ value: this.props.value, multipleValue: this.props.multipleValue });
-        this.setState({ numberFormat: this.props.value == undefined || this.props.value == '' ? this.props.placeholder : this.props.value });
+        this.setState({ value: this.props.defaultValue, multipleValue: this.props.multipleValue });
+        this.setState({ numberFormat: parseInt(this.props.defaultValue == undefined || this.props.defaultValue == '' ? this.props.placeholder : this.props.defaultValue).toLocaleString() });
     }
 
-    onInputChange(e) {
-        // this.setState({ value: e.target.value });
+    onChange(e) {
+        if (this.props.type == 'select' && this.props.multiple) {
+            const opts = e.target.selectedOptions;
+            let multiValue = [];
+
+            for (var i = 0, l = opts.length; i < l; i++) {
+                multiValue.push(opts[i].value);
+            }
+
+            e.target.setCustomValidity(opts.length > this.props.max ? `You can add maximum ${this.props.max} options` : '');
+
+            this.setState({ multipleValue: multiValue });
+
+        } else {
+            this.setState({ value: e.target.value, currentLength: e.target.value.length });
+        }
+
         if (this.props.type == 'number') {
             this.setState({ numberFormat: parseInt(e.target.value).toLocaleString() });
         }
-    }
-
-    onTextareaChange(e) {
-        // this.setState({ value: e.target.value });
-        this.setState({ currentLength: e.target.value.length });
-    }
-
-    onDropdownChange(e) {
-        // this.setState({ multipleValue: e.target.value });
-        if (this.props.multiple && e.target.selectedOptions.length > this.props.max) {
-            e.target.setCustomValidity(`You can add maximum ${this.props.max} options`);
-        } else {
-            e.target.setCustomValidity('');
-        }
-    }
-
-    onRadioChange(e) {
-        // this.setState({ multipleValue: e.target.value });
     }
 
     render() {
@@ -95,8 +92,8 @@ class FormField extends React.Component < IFormFieldProps, IFormFieldState > {
                         placeholder={self.props.placeholder} required={self.props.required}
                         min={self.props.min} max={self.props.max}
                         minLength={self.props.minLength} maxLength={self.props.maxLength}
-                        defaultValue={self.props.value} pattern={self.props.pattern}
-                        onChange={self.onInputChange.bind(self)}/>
+                        value={self.state.value} pattern={self.props.pattern}
+                        onChange={self.onChange.bind(self)}/>
 
                 { (/number/.test(self.props.type)) &&
                     <span className="number-markup">{self.state.numberFormat}</span>
@@ -131,7 +128,7 @@ class FormField extends React.Component < IFormFieldProps, IFormFieldState > {
                     <textarea className="form-control" id={this.props.name} name={this.props.name} {...inputAttrs}
                             placeholder={this.props.placeholder} required={this.props.required}
                             minLength={this.props.minLength} maxLength={this.props.maxLength}
-                            value={self.props.value} onChange={this.onTextareaChange.bind(this)}></textarea>
+                            value={self.state.value} onChange={this.onChange.bind(this)}></textarea>
 
                     <small className="form-text text-muted">
                         <span className="counter">
@@ -146,9 +143,9 @@ class FormField extends React.Component < IFormFieldProps, IFormFieldState > {
                     <select className={`form-control ${this.props.autocomplete ? 'input-autoComplete' : ''}`} id={this.props.name} name={this.props.name}
                         multiple={this.props.multiple} data-maximum-selection-length={this.props.max}
                         placeholder={this.props.placeholder} required={this.props.required}
-                        defaultValue={this.props.multiple? this.props.multipleValue : this.props.value} data-allow-clear="true" onChange={this.onDropdownChange.bind(this)}>
+                        value={this.props.multiple? this.state.multipleValue : this.state.value} data-allow-clear="true" onChange={this.onChange.bind(this)}>
                         { this.props.options && this.props.options.map(item => {
-                            return <option key={item.value} value={item.value} selected={item.selected}>{item.name}</option>
+                            return <option key={item.value} value={item.value}>{item.name}</option>
                         })}
                     </select>
                 }
@@ -156,7 +153,7 @@ class FormField extends React.Component < IFormFieldProps, IFormFieldState > {
                 { (/radio/.test(this.props.type)) && this.props.options && this.props.options.map(item => {
                         return (
                             <div className="custom-control custom-radio custom-control-inline" key={item.value}>
-                                <input className="custom-control-input" type="radio" id={`${this.props.name}-${item.value}`} name={this.props.name} required={this.props.required} value={item.value} defaultChecked={item.selected} onChange={this.onRadioChange.bind(this)} />
+                                <input className="custom-control-input" type="radio" id={`${this.props.name}-${item.value}`} name={this.props.name} required={this.props.required} value={item.value} defaultChecked={item.selected} onChange={this.onChange.bind(this)} />
                                 <label className="custom-control-label" htmlFor={`${this.props.name}-${item.value}`} >{item.name}</label>
                             </div>
                         )
