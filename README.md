@@ -29,9 +29,12 @@ Can change `pageSize` to test paging if less data: `<TruckList pageSize={2} />`
 - Use bootstrap framework (can refine to use partial from bootstrap but I'm lazy)
 - Run well with json-server (mock database)
 
+5/ Validation: 
+- Validate truck plate is not yet existent
+- Show alert message
+- Scroll to alert on submit
+
 
 **Remaining task**
 - Implement autocomplete for dropdown: cargoType, driver
-- Textarea is not able to change in edit form (some issues with props & state, tried  but not yet figured out the issue)
-- No test
 
