@@ -88,14 +88,9 @@
     {
       "plate": "30A-99999",
       "cargoTypeIds": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9
+        12,
+        13,
+        14
       ],
       "driverId": 2,
       "truckTypeId": 2,
@@ -103,9 +98,25 @@
       "dimension": "5543535",
       "address": "rewtrgfgd",
       "productionYear": 2017,
-      "statusTypeId": 3,
-      "description": "",
+      "statusTypeId": 1,
+      "description": "here the test. new description",
       "id": 6
+    },
+    {
+      "plate": "32A-10203",
+      "cargoTypeIds": [
+        4,
+        5
+      ],
+      "driverId": 1,
+      "truckTypeId": 3,
+      "price": 20000000,
+      "dimension": "20x30x30",
+      "address": "123 unknown",
+      "productionYear": 2008,
+      "statusTypeId": 2,
+      "description": "new truck 2019",
+      "id": 7
     }
   ],
   "cargoTypes": [

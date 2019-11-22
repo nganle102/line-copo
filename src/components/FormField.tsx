@@ -117,7 +117,7 @@ class FormField extends React.Component < IFormFieldProps, IFormFieldState > {
                 { this.props.isInputGroup && (INPUT_TYPE.test(this.props.type)) && !(/textarea/.test(this.props.type)) &&
                     <div className="input-group mb-3">
                         <div className="input-group-prepend">
-                            <span className="input-group-text" id={`${this.props.name}-addon`}>VND</span>
+                            <span className="input-group-text" id={`${this.props.name}-addon`}>{this.props.prependLabel}</span>
                         </div>
                         {renderInput()}
                     </div>
@@ -128,7 +128,7 @@ class FormField extends React.Component < IFormFieldProps, IFormFieldState > {
                     <textarea className="form-control" id={this.props.name} name={this.props.name} {...inputAttrs}
                             placeholder={this.props.placeholder} required={this.props.required}
                             minLength={this.props.minLength} maxLength={this.props.maxLength}
-                            value={self.state.value} onChange={this.onChange.bind(this)}></textarea>
+                            value={this.state.value} onChange={this.onChange.bind(this)}></textarea>
 
                     <small className="form-text text-muted">
                         <span className="counter">

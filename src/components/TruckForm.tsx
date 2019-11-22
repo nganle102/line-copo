@@ -286,7 +286,7 @@ class TruckForm extends React.Component < any, any > {
                         hasLabel={item.hasLabel} label={item.label}
                         hasDescription={item.hasDescription} description={item.description}
                         placeholder={item.placeholder} required={item.required}
-                        type={item.type} isInputGroup={item.isInputGroup}
+                        type={item.type} isInputGroup={item.isInputGroup} prependLabel={item.prependLabel}
                         multiple={item.multiple} autocomplete={item.autocomplete}
                         min={item.min} max={item.max}
                         minLength={item.minLength} maxLength={item.maxLength}

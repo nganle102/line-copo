@@ -79,7 +79,7 @@ class TruckList extends React.Component < any, any > {
     }
 
     getCargoTypes(types) {
-        var result = this.state.cargoTypes.filter((item) => { return types.indexOf(item.id) > 0 });
+        var result = this.state.cargoTypes.filter((item) => { return types.indexOf(item.id) > -1 });
         return result.length === 0 ? 'N/A' : result.map((el) => { return el.name }).join(', ');
     }
 
